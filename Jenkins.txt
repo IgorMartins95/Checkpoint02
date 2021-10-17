@@ -1,0 +1,37 @@
+node{
+    stage('Extrair código fonte'){
+        echo 'Extraindo código fonte...'
+        checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/IgorMartins95/Checkpoint02.git']]])
+    }
+
+    stage('Compilar'){
+        echo 'Realizando a compilação...'
+        sh 'javac Numeros.java'
+    }
+
+    stage("Execução") {
+	    script {
+	        env.OPTION = input message: 'Deseja executar:', ok: 'Feito',
+	        parameters: [choice(name: 'OPÇÃO', choices: 'Sim\nNão', description: 'Deseja executar?')]
+	    }
+	        echo "${env.OPÇÃO}"
+	}
+	stage ("Executar") {
+	    if("${env.OPÇÃO}" == 'Sim')  {
+	        echo "Executando"
+	        sh 'java Numeros' 
+	    }else{
+	        echo "Não executado"
+	    }
+	}
+	stage ("Deploy") {
+	    if("${env.OPTION}" == 'Sim')  {
+	        echo "Realizado com sucesso" 
+	    }else{
+	        echo "Concluído"
+	    }
+	}
+    
+
+
+}
